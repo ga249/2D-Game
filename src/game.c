@@ -3,6 +3,7 @@
 #include "gf2d_graphics.h"
 #include "gf2d_sprite.h"
 #include "entity.h"
+#include "player.h"
 
 Entity *newTestEntity()
 {
@@ -52,6 +53,8 @@ int main(int argc, char * argv[])
     mouse = gf2d_sprite_load_all("images/pointer.png",32,32,16);
     /*main game loop*/
     bug = newTestEntity();
+    Entity *player;
+    player = player_new_ent("images/player1.png", vector2d(0, 0));
     while(!done)
     {
         SDL_PumpEvents();   // update SDL's internal event structures
@@ -82,7 +85,24 @@ int main(int argc, char * argv[])
         gf2d_grahics_next_frame();// render current draw frame and skip to the next frame
         
         if (keys[SDL_SCANCODE_ESCAPE])done = 1; // exit condition
-        if (keys[SDL_SCANCODE_SPACE])entity_free(bug); // exit condition
+        if (keys[SDL_SCANCODE_SPACE])
+        {
+            entity_free(bug); // exit condition
+            entity_free(player);
+        }
+        if (keys[SDL_SCANCODE_W]){
+            bug->position.y -= 1;
+        }
+        if (keys[SDL_SCANCODE_S]){
+            bug->position.y += 1;
+        }
+        if (keys[SDL_SCANCODE_D]){
+            bug->position.x += 1;
+        }
+        if (keys[SDL_SCANCODE_A]){
+            bug->position.x -= 1;
+        }
+
 //      slog("Rendering at %f FPS",gf2d_graphics_get_frames_per_second());
     }
     slog("---==== END ====---");

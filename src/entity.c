@@ -73,8 +73,9 @@ void entity_free(Entity *self)
 void entity_update(Entity *self)
 {
     if (!self)return;
-    self->frame = self->frame + 0.1;
-    if (self->frame > 10)self->frame = 0;
+    //self->frame = self->frame + 0.1;
+    //if (self->frame > 10)self->frame = 0;
+    if (self->think)self->think(self);
 }
 
 void entity_update_all()

@@ -5,13 +5,15 @@
 
 typedef struct Entity_S
 {
-    Uint8       _inuse;         /**<check if this entity in memory is active or not*/
-    Sprite      *sprite;        /**<a pointer to the sprite that is used by this entity*/
-    float        frame;         /**<current frame for the sprite*/
+    Uint8       _inuse;         /**<check if this entity in memory is active or not>*/
+    Sprite      *sprite;        /**<a pointer to the sprite that is used by this entity>*/
+    float        frame;         /**<current frame for the sprite>*/
 
-    Vector2D     position;      /**<where the entity is in 2D space*/
+    Vector2D     position;      /**<where the entity is in 2D space>*/
 
-    void (*think)(struct Entity_S *self);       /**<called when an entity draws*/
+    void         *typeOfEnt;    /**<void pointer to be set to what type of entity I want>*/
+
+    void (*think)(struct Entity_S *self);       /**<called when an entity draws>*/
 }Entity;
 
 /**
