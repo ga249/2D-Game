@@ -10,6 +10,7 @@ typedef struct Entity_S
     float        frame;         /**<current frame for the sprite>*/
 
     Vector2D     position;      /**<where the entity is in 2D space>*/
+    Vector3D     *rotation;      /**<rotation of entity (mainly for player)>*/
 
     void         *typeOfEnt;    /**<void pointer to be set to what type of entity I want>*/
 

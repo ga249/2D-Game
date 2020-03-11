@@ -100,7 +100,7 @@ void entity_draw(Entity *self)
     self->position,
     NULL,
     NULL,
-    NULL,
+    self->rotation,
     NULL,
     NULL,
     (Uint32)self->frame);

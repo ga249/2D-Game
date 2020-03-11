@@ -5,6 +5,7 @@
 #include "entity.h"
 #include "player.h"
 
+/*
 Entity *newTestEntity()
 {
     Entity *self;
@@ -16,7 +17,7 @@ Entity *newTestEntity()
         128,
         16);
     return self;
-}
+}*/
 
 int main(int argc, char * argv[])
 {
@@ -30,7 +31,6 @@ int main(int argc, char * argv[])
     Sprite *mouse;
     Vector4D mouseColor = {255,100,255,200};
     
-    Entity *bug;
     /*program initializtion*/
     init_logger("gf2d.log");
     slog("---==== BEGIN ====---");
@@ -52,9 +52,12 @@ int main(int argc, char * argv[])
     sprite = gf2d_sprite_load_image("images/backgrounds/bg_flat.png");
     mouse = gf2d_sprite_load_all("images/pointer.png",32,32,16);
     /*main game loop*/
-    bug = newTestEntity();
     Entity *player;
-    player = player_new_ent("images/player1.png", vector2d(0, 0));
+    player = player_new_ent("images/player1.png", vector2d(20, 20));
+    Player *p = (Player *)player->typeOfEnt;
+
+    SDL_GameController *c = p->controller;
+
     while(!done)
     {
         SDL_PumpEvents();   // update SDL's internal event structures
@@ -84,24 +87,18 @@ int main(int argc, char * argv[])
                 (int)mf);
         gf2d_grahics_next_frame();// render current draw frame and skip to the next frame
         
-        if (keys[SDL_SCANCODE_ESCAPE])done = 1; // exit condition
-        if (keys[SDL_SCANCODE_SPACE])
+        if (keys[SDL_SCANCODE_ESCAPE])
         {
-            entity_free(bug); // exit condition
-            entity_free(player);
+            entity_free(player);// exit condition
+            done = 1; // exit condition
         }
-        if (keys[SDL_SCANCODE_W]){
-            bug->position.y -= 1;
+        
+        if (keys[SDL_SCANCODE_SPACE] || SDL_GameControllerGetButton(c,SDL_CONTROLLER_BUTTON_START))
+        { 
+            entity_free(player);// exit condition
         }
-        if (keys[SDL_SCANCODE_S]){
-            bug->position.y += 1;
-        }
-        if (keys[SDL_SCANCODE_D]){
-            bug->position.x += 1;
-        }
-        if (keys[SDL_SCANCODE_A]){
-            bug->position.x -= 1;
-        }
+
+        
 
 //      slog("Rendering at %f FPS",gf2d_graphics_get_frames_per_second());
     }
