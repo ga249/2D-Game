@@ -4,6 +4,7 @@
 #include "gf2d_sprite.h"
 #include "entity.h"
 #include "player.h"
+#include "tilemap.h"
 
 /*
 Entity *newTestEntity()
@@ -29,7 +30,10 @@ int main(int argc, char * argv[])
     int mx,my;
     float mf = 0;
     Sprite *mouse;
+
+    TileMap *map;
     Vector4D mouseColor = {255,100,255,200};
+    static Vector2D path[2];
     
     /*program initializtion*/
     init_logger("gf2d.log");
@@ -51,6 +55,10 @@ int main(int argc, char * argv[])
     /*demo setup*/
     sprite = gf2d_sprite_load_image("images/backgrounds/bg_flat.png");
     mouse = gf2d_sprite_load_all("images/pointer.png",32,32,16);
+
+    map = tilemap_load("levels/tilemap.map");
+    vector2d_copy(path[0],map->start);
+    vector2d_copy(path[1],map->end);
     /*main game loop*/
     Entity *playerEnt;
     playerEnt = player_new_ent("images/player1.png", vector2d(0, 0));
@@ -73,6 +81,9 @@ int main(int argc, char * argv[])
         // all drawing should happen betweem clear_screen and next_frame
             //backgrounds drawn first
             gf2d_sprite_draw_image(sprite,vector2d(0,0));
+            
+            tilemap_draw(map,vector2d(86,24));
+            tilemap_draw_path(path,2, map,vector2d(86,24));
             
             entity_draw_all();
             //UI elements last
