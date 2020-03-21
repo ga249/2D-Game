@@ -67,6 +67,7 @@ void entity_free(Entity *self)
 {
     if (!self)return;
     gf2d_sprite_free(self->sprite);
+    if(self->rotation)free(self->rotation);
     memset(self,0,sizeof(Entity));
 }
 

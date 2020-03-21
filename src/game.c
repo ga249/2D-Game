@@ -52,9 +52,9 @@ int main(int argc, char * argv[])
     sprite = gf2d_sprite_load_image("images/backgrounds/bg_flat.png");
     mouse = gf2d_sprite_load_all("images/pointer.png",32,32,16);
     /*main game loop*/
-    Entity *player;
-    player = player_new_ent("images/player1.png", vector2d(20, 20));
-    Player *p = (Player *)player->typeOfEnt;
+    Entity *playerEnt;
+    playerEnt = player_new_ent("images/player1.png", vector2d(0, 0));
+    Player *p = (Player *)playerEnt->typeOfEnt;
 
     SDL_GameController *c = p->controller;
 
@@ -89,16 +89,26 @@ int main(int argc, char * argv[])
         
         if (keys[SDL_SCANCODE_ESCAPE])
         {
-            entity_free(player);// exit condition
+            entity_free(playerEnt);// exit condition
             done = 1; // exit condition
         }
         
         if (keys[SDL_SCANCODE_SPACE] || SDL_GameControllerGetButton(c,SDL_CONTROLLER_BUTTON_START))
         { 
-            entity_free(player);// exit condition
+            entity_free(playerEnt);// exit condition
         }
 
-        
+        if (SDL_GameControllerGetButton(c,SDL_CONTROLLER_BUTTON_LEFTSHOULDER))
+        {
+            float rx = SDL_GameControllerGetAxis(c, SDL_CONTROLLER_AXIS_RIGHTX)/10000;
+            float ry = SDL_GameControllerGetAxis(c, SDL_CONTROLLER_AXIS_RIGHTY)/10000;
+
+            Vector3D *rot = playerEnt->rotation;
+            rot->x = 65;
+            rot->y = 55;
+            rot->z = vector_angle(rx,ry) + 90;
+            slog("rot: %f", rot->z);
+        }
 
 //      slog("Rendering at %f FPS",gf2d_graphics_get_frames_per_second());
     }
