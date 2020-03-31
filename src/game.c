@@ -107,7 +107,7 @@ int main(int argc, char * argv[])
         
         for (int i = 0; i < entity_manager_get_active().maxEnts; i++)
         {
-            if(entity_manager_get_active().entityList[i].tag == 2) //koalas
+            if(entity_manager_get_active().entityList[i].tag == 2) //animals------------------------------------------
             {
                 //Grabbing
                 if (collide_rect(playerEnt->hitBox, entity_manager_get_active().entityList[i].hitBox))
@@ -126,7 +126,7 @@ int main(int argc, char * argv[])
                     slog("saved animals: %i", savedAnimals);
                 }
             }
-            if(entity_manager_get_active().entityList[i].tag == 1) //buckets
+            if(entity_manager_get_active().entityList[i].tag == 1) //buckets-----------------------------------------
             {
                 //water pickup
                 if (p->waterAmmo < 100 && collide_rect(playerEnt->hitBox, entity_manager_get_active().entityList[i].hitBox))
@@ -141,40 +141,21 @@ int main(int argc, char * argv[])
 
                 }
             }
+            if(entity_manager_get_active().entityList[i].tag == 3) //boots--------------------------------------------
+            {
+                if (collide_rect(playerEnt->hitBox, boots1->hitBox))
+                {
+                    entity_free(boots1);
+                    p->isSprint = 1;
+                    start = SDL_GetTicks();
+                }
+                if (p->isSprint == 1 && SDL_GetTicks() - start >= 2000000)
+                {
+                    p->isSprint = 0;
+                }
+            }
         }
-
-        //Grabbing
         /*
-        if (collide_rect(playerEnt->hitBox, koala1->hitBox))
-        {
-            if (SDL_GameControllerGetButton(c, SDL_CONTROLLER_BUTTON_B))
-            {
-                koala1->position = playerEnt->position;
-                koala1->position.x += 40;
-            }
-        }
-
-        //returning animals
-        if (collide_rect(koala1->hitBox, ambulance->hitBox))
-        {
-            entity_free(koala1);
-            savedAnimals += 1;
-            slog("saved animals: %i", savedAnimals);
-        }
-
-        //water pickup
-        if (p->waterAmmo < 100 && collide_rect(playerEnt->hitBox, bucket1->hitBox))
-        {
-            entity_free(bucket1);
-            if (p->waterAmmo > 80)
-            {
-                p->waterAmmo = 100;
-            }else{
-                p->waterAmmo += 20;
-            }
-            
-        }*/
-
         if (collide_rect(playerEnt->hitBox, boots1->hitBox))
         {
             entity_free(boots1);
@@ -184,7 +165,7 @@ int main(int argc, char * argv[])
         if (p->isSprint == 1 && SDL_GetTicks() - start >= 2000000)
         {
             p->isSprint = 0;
-        }
+        }*/
         
         
 
