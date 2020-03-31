@@ -4,6 +4,7 @@
 #include "gf2d_sprite.h"
 #include "entity.h"
 #include "player.h"
+#include "collisions.h"
 
 /*
 Entity *newTestEntity()
@@ -25,6 +26,11 @@ int main(int argc, char * argv[])
     int done = 0;
     const Uint8 * keys;
     Sprite *sprite;
+    Entity *playerEnt;
+    Entity *tree1;
+    Entity *bush1;
+    Entity *koala1;
+    Entity *bucket1;
     
     int mx,my;
     float mf = 0;
@@ -51,13 +57,16 @@ int main(int argc, char * argv[])
     /*demo setup*/
     sprite = gf2d_sprite_load_image("images/backgrounds/bg_flat.png");
     mouse = gf2d_sprite_load_all("images/pointer.png",32,32,16);
-    /*main game loop*/
-    Entity *playerEnt;
     playerEnt = player_new_ent("images/player1.png", vector2d(0, 0));
     Player *p = (Player *)playerEnt->typeOfEnt;
-
     SDL_GameController *c = p->controller;
+    tree1 = entity_spawn_tree(vector2d(40.0,30.0));
+    bush1 = entity_spawn_bush(vector2d(200.0,60.0));
+    koala1 = entity_spawn_koala(vector2d(500.0,200.0));
+    bucket1 = entity_spawn_waterPickUp(vector2d(700.0, 300.0));
+    
 
+    /*main game loop*/
     while(!done)
     {
         SDL_PumpEvents();   // update SDL's internal event structures
@@ -68,7 +77,6 @@ int main(int argc, char * argv[])
         if (mf >= 16.0)mf = 0;
         
         entity_update_all();
-        
         gf2d_graphics_clear_screen();// clears drawing buffers
         // all drawing should happen betweem clear_screen and next_frame
             //backgrounds drawn first
@@ -85,8 +93,40 @@ int main(int argc, char * argv[])
                 NULL,
                 &mouseColor,
                 (int)mf);
+
+        gf2d_draw_rect(bucket1->hitBox, vector4d(600,50, 30,550));
+
         gf2d_grahics_next_frame();// render current draw frame and skip to the next frame
         
+        if (collide_rect(playerEnt->hitBox, tree1->hitBox))
+        {
+            slog("hitting tree1");
+        }
+
+        if (collide_rect(playerEnt->hitBox, bush1->hitBox))
+        {
+            slog("hitting bush1");
+        }
+
+        //Grabbing
+        if (collide_rect(playerEnt->hitBox, koala1->hitBox))
+        {
+            if (SDL_GameControllerGetButton(c, SDL_CONTROLLER_BUTTON_B))
+            {
+                koala1->position = playerEnt->position;
+                koala1->position.x += 40;
+            }
+        }
+
+        if (collide_rect(playerEnt->hitBox, bucket1->hitBox))
+        {
+            entity_free(bucket1);
+            p->waterAmmo += 20;
+            
+        }
+        
+        slog("water: %f", p->waterAmmo);
+
         if (keys[SDL_SCANCODE_ESCAPE])
         {
             entity_free(playerEnt);// exit condition
@@ -96,6 +136,8 @@ int main(int argc, char * argv[])
         if (keys[SDL_SCANCODE_SPACE] || SDL_GameControllerGetButton(c,SDL_CONTROLLER_BUTTON_START))
         { 
             entity_free(playerEnt);// exit condition
+            entity_free(tree1);// exit condition
+            entity_free(bush1);// exit condition
         }
 
         if (SDL_GameControllerGetButton(c,SDL_CONTROLLER_BUTTON_LEFTSHOULDER))
@@ -107,7 +149,7 @@ int main(int argc, char * argv[])
             rot->x = 65;
             rot->y = 55;
             rot->z = vector_angle(rx,ry) + 90;
-            slog("rot: %f", rot->z);
+            //slog("rot: %f", rot->z);
         }
 
 //      slog("Rendering at %f FPS",gf2d_graphics_get_frames_per_second());

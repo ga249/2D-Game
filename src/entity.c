@@ -116,3 +116,80 @@ void entity_draw_all()
         entity_draw(&entity_manager.entityList[i]);
     }
 }
+
+Entity *entity_spawn_tree(Vector2D pos)
+{
+    Entity *self;
+    self = entity_new();
+    if (!self)return NULL;
+    self->sprite = gf2d_sprite_load_image("images/tree.png");
+    self->position = pos;
+    SDL_Rect hb;            //hitbox
+    hb.x = pos.x + 28;
+    hb.y = pos.y + 10;
+    hb.h = 100;
+    hb.w = 72;
+    self->hitBox = hb;
+    return self;
+}
+
+Entity *entity_spawn_bush(Vector2D pos)
+{
+    Entity *self;
+    self = entity_new();
+    if (!self)return NULL;
+    self->sprite = gf2d_sprite_load_image("images/bush.png");
+    self->position = pos;
+    SDL_Rect hb;            //hitbox
+    hb.x = pos.x + 20;
+    hb.y = pos.y + 45;
+    hb.h = 40;
+    hb.w = 80;
+    self->hitBox = hb;
+    return self;
+}
+
+void koala_think(Entity *self)
+{
+    SDL_Rect hb;            //hitbox
+    hb.x = self->position.x + 40;
+    hb.y = self->position.y + 35;
+    hb.h = 60;
+    hb.w = 50;
+    self->hitBox = hb;
+}
+
+Entity *entity_spawn_koala(Vector2D pos)
+{
+    Entity *self;
+    self = entity_new();
+    if (!self)return NULL;
+    self->sprite = gf2d_sprite_load_image("images/koala.png");
+    self->position = pos;
+    self->think = koala_think;
+    return self;
+}
+
+void fire_think(Entity *self, Entity *other)
+{
+    
+}
+
+Entity *entity_spawn_fire(Entity *self,Vector2D pos);
+
+Entity *entity_spawn_waterPickUp(Vector2D pos)
+{
+    Entity *self;
+    self = entity_new();
+    if (!self)return NULL;
+    self->sprite = gf2d_sprite_load_image("images/WaterBucket.png");
+    self->position = pos;
+    self->tag = 2;
+    SDL_Rect hb;            //hitbox
+    hb.x = pos.x + 40;
+    hb.y = pos.y + 20;
+    hb.h = 65;
+    hb.w = 50;
+    self->hitBox = hb;
+    return self;
+}

@@ -9,6 +9,9 @@ typedef struct Entity_S
     Sprite      *sprite;        /**<a pointer to the sprite that is used by this entity>*/
     float        frame;         /**<current frame for the sprite>*/
 
+    SDL_Rect    hitBox;         /**<rect used for collisions>*/
+    int         tag;            /**<type of entity:fire - 1,bucket - 2>*/
+
     Vector2D     position;      /**<where the entity is in 2D space>*/
     Vector3D     *rotation;      /**<rotation of entity (mainly for player)>*/
 
@@ -50,5 +53,15 @@ void entity_update_all();
  */
 
 void entity_draw_all();
+
+Entity *entity_spawn_tree(Vector2D pos);
+
+Entity *entity_spawn_bush(Vector2D pos);
+
+Entity *entity_spawn_koala(Vector2D pos);
+
+Entity *entity_spawn_fire(Entity *self,Vector2D pos);
+
+Entity *entity_spawn_waterPickUp(Vector2D pos);
 
 #endif
