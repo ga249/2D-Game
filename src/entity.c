@@ -175,7 +175,7 @@ void fire_think(Entity *self, Entity *other)
     
 }
 
-Entity *entity_spawn_fire(Entity *self,Vector2D pos);
+Entity *entity_spawn_fire(Vector2D pos);
 
 Entity *entity_spawn_waterPickUp(Vector2D pos)
 {
@@ -189,6 +189,23 @@ Entity *entity_spawn_waterPickUp(Vector2D pos)
     hb.x = pos.x + 40;
     hb.y = pos.y + 20;
     hb.h = 65;
+    hb.w = 50;
+    self->hitBox = hb;
+    return self;
+}
+
+Entity *entity_spawn_speedBoots(Vector2D pos)
+{
+    Entity *self;
+    self = entity_new();
+    if (!self)return NULL;
+    self->sprite = gf2d_sprite_load_image("images/speedBoots.png");
+    self->position = pos;
+    self->tag = 2;
+    SDL_Rect hb;            //hitbox
+    hb.x = pos.x + 40;
+    hb.y = pos.y + 35;
+    hb.h = 60;
     hb.w = 50;
     self->hitBox = hb;
     return self;

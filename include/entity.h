@@ -60,8 +60,10 @@ Entity *entity_spawn_bush(Vector2D pos);
 
 Entity *entity_spawn_koala(Vector2D pos);
 
-Entity *entity_spawn_fire(Entity *self,Vector2D pos);
+Entity *entity_spawn_fire(Vector2D pos);
 
 Entity *entity_spawn_waterPickUp(Vector2D pos);
+
+Entity *entity_spawn_speedBoots(Vector2D pos);
 
 #endif

@@ -31,6 +31,7 @@ int main(int argc, char * argv[])
     Entity *bush1;
     Entity *koala1;
     Entity *bucket1;
+    Entity *boots1;
     
     int mx,my;
     float mf = 0;
@@ -64,6 +65,7 @@ int main(int argc, char * argv[])
     bush1 = entity_spawn_bush(vector2d(200.0,60.0));
     koala1 = entity_spawn_koala(vector2d(500.0,200.0));
     bucket1 = entity_spawn_waterPickUp(vector2d(700.0, 300.0));
+    boots1 = entity_spawn_speedBoots(vector2d(40.0,600.0));
     
 
     /*main game loop*/
@@ -94,7 +96,7 @@ int main(int argc, char * argv[])
                 &mouseColor,
                 (int)mf);
 
-        gf2d_draw_rect(bucket1->hitBox, vector4d(600,50, 30,550));
+        gf2d_draw_rect(boots1->hitBox, vector4d(600,50, 30,550));
 
         gf2d_grahics_next_frame();// render current draw frame and skip to the next frame
         
