@@ -10,7 +10,7 @@ typedef struct Entity_S
     float        frame;         /**<current frame for the sprite>*/
 
     SDL_Rect    hitBox;         /**<rect used for collisions>*/
-    int         tag;            /**<type of entity:fire - 1,bucket - 2>*/
+    int         tag;            /**<type of entity:fire - 0,bucket - 1, koala - 2>*/
 
     Vector2D     position;      /**<where the entity is in 2D space>*/
     Vector3D     *rotation;      /**<rotation of entity (mainly for player)>*/
@@ -19,6 +19,18 @@ typedef struct Entity_S
 
     void (*think)(struct Entity_S *self);       /**<called when an entity draws>*/
 }Entity;
+
+typedef struct 
+{
+    Uint32  maxEnts;         /**<Maximum number of entities*/
+    Entity  *entityList;     /**<List of entities*/
+}EntityManager;
+
+/**
+ * @brief Returns a pointer to the entity_manager
+ * */
+EntityManager entity_manager_get_active();
+
 
 /**
  * @brief get a pointer to a new entity
@@ -57,6 +69,8 @@ void entity_draw_all();
 Entity *entity_spawn_tree(Vector2D pos);
 
 Entity *entity_spawn_bush(Vector2D pos);
+
+Entity *entity_spawn_ambulance(Vector2D pos);
 
 Entity *entity_spawn_koala(Vector2D pos);
 

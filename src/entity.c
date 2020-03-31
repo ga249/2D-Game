@@ -1,14 +1,14 @@
 #include <stdlib.h>
 #include "simple_logger.h"
 #include "entity.h"
-
-typedef struct
-{
-    Uint32 maxEnts;         /**<max entities supported by the system*/
-    Entity *entityList;     /**<pointer to an allocated array of entities*/
-}EntityManager;
+#include "collisions.h"
 
 static EntityManager entity_manager = {0};
+
+EntityManager entity_manager_get_active()
+{
+    return entity_manager;
+}
 
 void entity_manager_close()
 {
@@ -149,6 +149,22 @@ Entity *entity_spawn_bush(Vector2D pos)
     return self;
 }
 
+Entity *entity_spawn_ambulance(Vector2D pos)
+{
+    Entity *self;
+    self = entity_new();
+    if (!self)return NULL;
+    self->sprite = gf2d_sprite_load_image("images/ambulance.png");
+    self->position = pos;
+    SDL_Rect hb;            //hitbox
+    hb.x = pos.x + 5;
+    hb.y = pos.y + 20;
+    hb.h = 80;
+    hb.w = 110;
+    self->hitBox = hb;
+    return self;
+}
+
 void koala_think(Entity *self)
 {
     SDL_Rect hb;            //hitbox
@@ -167,6 +183,7 @@ Entity *entity_spawn_koala(Vector2D pos)
     self->sprite = gf2d_sprite_load_image("images/koala.png");
     self->position = pos;
     self->think = koala_think;
+    self->tag = 2;
     return self;
 }
 
@@ -184,7 +201,7 @@ Entity *entity_spawn_waterPickUp(Vector2D pos)
     if (!self)return NULL;
     self->sprite = gf2d_sprite_load_image("images/WaterBucket.png");
     self->position = pos;
-    self->tag = 2;
+    self->tag = 1;
     SDL_Rect hb;            //hitbox
     hb.x = pos.x + 40;
     hb.y = pos.y + 20;
@@ -201,12 +218,12 @@ Entity *entity_spawn_speedBoots(Vector2D pos)
     if (!self)return NULL;
     self->sprite = gf2d_sprite_load_image("images/speedBoots.png");
     self->position = pos;
-    self->tag = 2;
+    self->tag = 3;
     SDL_Rect hb;            //hitbox
-    hb.x = pos.x + 40;
-    hb.y = pos.y + 35;
-    hb.h = 60;
-    hb.w = 50;
+    hb.x = pos.x + 5;
+    hb.y = pos.y + 10;
+    hb.h = 30;
+    hb.w = 55;
     self->hitBox = hb;
     return self;
 }

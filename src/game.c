@@ -24,7 +24,10 @@ int main(int argc, char * argv[])
 {
     /*variable declarations*/
     int done = 0;
+    float start;
+    int savedAnimals = 0;
     const Uint8 * keys;
+    //EntityManager entity_manager = entity_manager_get_active();
     Sprite *sprite;
     Entity *playerEnt;
     Entity *tree1;
@@ -32,6 +35,7 @@ int main(int argc, char * argv[])
     Entity *koala1;
     Entity *bucket1;
     Entity *boots1;
+    Entity *ambulance;
     
     int mx,my;
     float mf = 0;
@@ -59,13 +63,14 @@ int main(int argc, char * argv[])
     sprite = gf2d_sprite_load_image("images/backgrounds/bg_flat.png");
     mouse = gf2d_sprite_load_all("images/pointer.png",32,32,16);
     playerEnt = player_new_ent("images/player1.png", vector2d(0, 0));
-    Player *p = (Player *)playerEnt->typeOfEnt;
+    Player *p = (Player *)playerEnt->typeOfEnt;     p->waterAmmo = 100;
     SDL_GameController *c = p->controller;
     tree1 = entity_spawn_tree(vector2d(40.0,30.0));
     bush1 = entity_spawn_bush(vector2d(200.0,60.0));
     koala1 = entity_spawn_koala(vector2d(500.0,200.0));
     bucket1 = entity_spawn_waterPickUp(vector2d(700.0, 300.0));
-    boots1 = entity_spawn_speedBoots(vector2d(40.0,600.0));
+    boots1 = entity_spawn_speedBoots(vector2d(40.0,200.0));
+    ambulance = entity_spawn_ambulance(vector2d(10.0,300.0));
     
 
     /*main game loop*/
@@ -96,21 +101,50 @@ int main(int argc, char * argv[])
                 &mouseColor,
                 (int)mf);
 
-        gf2d_draw_rect(boots1->hitBox, vector4d(600,50, 30,550));
+        //gf2d_draw_rect(ambulance->hitBox, vector4d(600,50, 30,550));
 
         gf2d_grahics_next_frame();// render current draw frame and skip to the next frame
         
-        if (collide_rect(playerEnt->hitBox, tree1->hitBox))
+        for (int i = 0; i < entity_manager_get_active().maxEnts; i++)
         {
-            slog("hitting tree1");
-        }
+            if(entity_manager_get_active().entityList[i].tag == 2) //koalas
+            {
+                //Grabbing
+                if (collide_rect(playerEnt->hitBox, entity_manager_get_active().entityList[i].hitBox))
+                {
+                    if (SDL_GameControllerGetButton(c, SDL_CONTROLLER_BUTTON_B))
+                    {
+                        entity_manager_get_active().entityList[i].position = playerEnt->position;
+                        entity_manager_get_active().entityList[i].position.x += 40;
+                    }
+                }
+                //returning animals
+                if (collide_rect(entity_manager_get_active().entityList[i].hitBox, ambulance->hitBox))
+                {
+                    entity_free(&entity_manager_get_active().entityList[i]);
+                    savedAnimals += 1;
+                    slog("saved animals: %i", savedAnimals);
+                }
+            }
+            if(entity_manager_get_active().entityList[i].tag == 1) //buckets
+            {
+                //water pickup
+                if (p->waterAmmo < 100 && collide_rect(playerEnt->hitBox, entity_manager_get_active().entityList[i].hitBox))
+                {
+                    entity_free(&entity_manager_get_active().entityList[i]);
+                    if (p->waterAmmo > 80)
+                    {
+                        p->waterAmmo = 100;
+                    }else{
+                        p->waterAmmo += 20;
+                    }
 
-        if (collide_rect(playerEnt->hitBox, bush1->hitBox))
-        {
-            slog("hitting bush1");
+                }
+            }
         }
 
         //Grabbing
+        /*
         if (collide_rect(playerEnt->hitBox, koala1->hitBox))
         {
             if (SDL_GameControllerGetButton(c, SDL_CONTROLLER_BUTTON_B))
@@ -120,14 +154,39 @@ int main(int argc, char * argv[])
             }
         }
 
-        if (collide_rect(playerEnt->hitBox, bucket1->hitBox))
+        //returning animals
+        if (collide_rect(koala1->hitBox, ambulance->hitBox))
+        {
+            entity_free(koala1);
+            savedAnimals += 1;
+            slog("saved animals: %i", savedAnimals);
+        }
+
+        //water pickup
+        if (p->waterAmmo < 100 && collide_rect(playerEnt->hitBox, bucket1->hitBox))
         {
             entity_free(bucket1);
-            p->waterAmmo += 20;
+            if (p->waterAmmo > 80)
+            {
+                p->waterAmmo = 100;
+            }else{
+                p->waterAmmo += 20;
+            }
             
+        }*/
+
+        if (collide_rect(playerEnt->hitBox, boots1->hitBox))
+        {
+            entity_free(boots1);
+            p->isSprint = 1;
+            start = SDL_GetTicks();
+        }
+        if (p->isSprint == 1 && SDL_GetTicks() - start >= 2000000)
+        {
+            p->isSprint = 0;
         }
         
-        slog("water: %f", p->waterAmmo);
+        
 
         if (keys[SDL_SCANCODE_ESCAPE])
         {
@@ -140,6 +199,8 @@ int main(int argc, char * argv[])
             entity_free(playerEnt);// exit condition
             entity_free(tree1);// exit condition
             entity_free(bush1);// exit condition
+            entity_free(bucket1);// exit condition
+            entity_free(koala1);// exit condition
         }
 
         if (SDL_GameControllerGetButton(c,SDL_CONTROLLER_BUTTON_LEFTSHOULDER))
