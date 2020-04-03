@@ -2,6 +2,15 @@
 #define __ENTITY_H__
 
 #include "gf2d_sprite.h"
+#include "gf2d_draw.h"
+
+#define ENT_PLAYER      0
+#define ENT_BUCKET      1
+#define ENT_ANIMAL      2
+#define ENT_BOOTS       3
+#define ENT_WATER       4
+#define ENT_FIRE        5
+#define ENT_DONE        6
 
 typedef struct Entity_S
 {
@@ -10,14 +19,16 @@ typedef struct Entity_S
     float        frame;         /**<current frame for the sprite>*/
 
     SDL_Rect    hitBox;         /**<rect used for collisions>*/
-    int         tag;            /**<type of entity:fire - 0,bucket - 1, koala - 2>*/
+    int         tag;            /**<type of entity:player - 0,bucket - 1, animal - 2,boots - 3>*/
+    int         health;
 
     Vector2D     position;      /**<where the entity is in 2D space>*/
     Vector3D     *rotation;      /**<rotation of entity (mainly for player)>*/
 
     void         *typeOfEnt;    /**<void pointer to be set to what type of entity I want>*/
-
+    int          done;
     void (*think)(struct Entity_S *self);       /**<called when an entity draws>*/
+    void (*waterThink)(struct Entity_S *self, struct Entity_S *other);  /**<specific think for shooting water>*/
 }Entity;
 
 typedef struct 
@@ -55,6 +66,11 @@ void entity_manager_init(Uint32 maxEnts);
 void entity_free(Entity *self);
 
 /**
+ * @brief free all ents exept player
+ */
+void free_all_ents();
+
+/**
  * @brief update every active entity
  */
 
@@ -76,8 +92,26 @@ Entity *entity_spawn_koala(Vector2D pos);
 
 Entity *entity_spawn_fire(Vector2D pos);
 
+int    isFireLeft();
+
+int    isKoalaLeft();
+
+void   killAllFire();
+
 Entity *entity_spawn_waterPickUp(Vector2D pos);
 
 Entity *entity_spawn_speedBoots(Vector2D pos);
+
+Entity *entity_spawn_win(Vector2D pos);
+
+Entity *entity_spawn_lose(Vector2D pos);
+
+Entity *water_shoot(Entity *player);
+
+Entity *get_water_ent();
+
+Entity *doneEnt();
+
+Entity *get_done_ent();
 
 #endif
